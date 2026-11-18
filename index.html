@@ -515,7 +515,8 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 
 /* ---------- lightbox / toast ---------- */
 .lb{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.94);display:grid;place-items:center;padding:calc(64px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(64px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
-.lb img{max-height:100%;max-width:100%;object-fit:contain}
+.lb img{max-height:100%;max-width:100%;object-fit:contain;will-change:transform}
+.lb{touch-action:none}   /* the viewer handles horizontal swipes itself */
 .lb .x{position:absolute;top:calc(16px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));width:48px;height:48px;border-radius:50%;border:1px solid var(--line-d);font-size:22px}
 .lb .nv{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.1);font-size:20px}
 .lb .pv{left:max(16px,env(safe-area-inset-left,0px))}
@@ -1119,6 +1120,15 @@ function openLB(list, i){
     document.body.appendChild(el);
     el.addEventListener('click',e=>{ if(e.target===el||e.target.classList.contains('x')) closeLB(); });
     $('.pv',el).onclick=()=>stepLB(-1); $('.nx',el).onclick=()=>stepLB(1);
+    // swipe: the photo follows the finger; past a threshold it slides out and the next one slides in
+    const img=$('img',el); let x0=null, y0=0, dx=0, busy=false;
+    const set=(x,o,t)=>{ img.style.transition=t?'transform .22s ease-out, opacity .22s ease-out':'none'; img.style.transform=x?`translateX(${x}px)`:''; img.style.opacity=o; };
+    el.addEventListener('touchstart',e=>{ if(busy||e.touches.length>1) return; x0=e.touches[0].clientX; y0=e.touches[0].clientY; dx=0; },{passive:true});
+    el.addEventListener('touchmove',e=>{ if(x0===null) return; dx=e.touches[0].clientX-x0; if(Math.abs(dx)>Math.abs(e.touches[0].clientY-y0)) set(dx,1-Math.min(Math.abs(dx)/innerWidth,.5),false); },{passive:true});
+    el.addEventListener('touchend',()=>{ if(x0===null) return; x0=null;
+      if(Math.abs(dx)<50 || lbList.length<2){ set(0,1,true); return; }
+      const d=dx<0?1:-1; busy=true; set(-d*innerWidth,0,true);
+      setTimeout(()=>{ stepLB(d); set(d*innerWidth*0.4,0,false); requestAnimationFrame(()=>requestAnimationFrame(()=>{ set(0,1,true); setTimeout(()=>{ busy=false; },230); })); },220); });
   }
   el.hidden=false; showLB(); $('.x',el).focus();
 }
