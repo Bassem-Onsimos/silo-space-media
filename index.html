@@ -1186,9 +1186,12 @@ function startReel(){
   const startAt=k=> PORTRAIT ? (REEL[k].p0||0) : REEL[k].t;
   if(PORTRAIT) vids.forEach(v=>{ v.removeAttribute('data-cw'); v.style.removeProperty('--z'); });
   const park=k=>{ const v=vids[k], t=startAt(k);
+    // load the whole clip ahead of its turn (hidden clips start as preload=none), so switching never waits
+    if(NEEDS_BLOB) v.preload='auto';
     const ready = NEEDS_BLOB ? blobify(v, clipSrc(k)) : Promise.resolve();
     return ready.then(()=>{
       if(!NEEDS_BLOB && v.preload!=="auto"){ v.preload="auto"; v.load(); }
+      else if(NEEDS_BLOB && v.readyState<2 && v.networkState!==2) v.load();
       const seek=()=>{ if(v.paused){ try{ v.currentTime=t; }catch(e){} } };
       v.readyState>=1 ? seek() : v.addEventListener('loadedmetadata',seek,{once:true}); }); };
   function go(i){
@@ -1215,7 +1218,7 @@ function startReel(){
       safePlay(v); reelRAF=requestAnimationFrame(tick);
       v.classList.add('on');
       if(prev!==v){ prev.classList.remove('on'); setTimeout(()=>{ if(!prev.classList.contains('on')){ prev.pause(); } },700); } });
-    setTimeout(()=>park(n),1500);
+    park(n);   // get the next clip ready right away
   }
   bars.forEach((b,k)=>b.addEventListener('click',()=>{ if(k!==reelI){ park(k); go(k); } }));
   const setActive=on=>{
@@ -1223,7 +1226,8 @@ function startReel(){
     hero.classList.toggle('paused',!on);
     if(on){ go(reelI); tcResume(); } else { clearTimeout(reelTimer); cancelAnimationFrame(reelRAF); vids.forEach(v=>v.pause()); tcPause(); }
   };
-  if(NEEDS_BLOB){ toBlobURL(clipSrc(0)).then(()=>REEL.forEach((r,k)=>{ if(k) toBlobURL(clipSrc(k)); })); }
+  // phones/Safari: download every clip in the background and prepare each one as soon as it arrives
+  if(NEEDS_BLOB){ toBlobURL(clipSrc(0)).then(()=>REEL.forEach((r,k)=>{ if(k) toBlobURL(clipSrc(k)).then(()=>{ if(k!==reelI) park(k); }).catch(()=>{}); })); }
   park(0);
   heroIO=new IntersectionObserver(([e])=>setActive(e.isIntersecting && !document.hidden),{threshold:0.15});
   heroIO.observe(hero);
@@ -1293,7 +1297,13 @@ function watchReveal(root){
   // Start only once the new page has painted and settled: the first frames after a page change are busy
   // (building the page, starting video, decoding images); a fade begun then stalls and snaps to its end.
   const io=rvIO;
-  requestAnimationFrame(()=>requestAnimationFrame(()=>setTimeout(()=>{ if(io===rvIO) order.forEach((i,el)=>io.observe(el)); },120)));
+  const start=()=>{ if(io===rvIO && !start.done){ start.done=1; order.forEach((i,el)=>io.observe(el)); } };
+  // pages that open on a playing video (Home, Projects) are busiest until that video is running: wait for it (max 0.8 s)
+  const hv=root && root.querySelector('video[autoplay]');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    if(hv && hv.readyState<3){ hv.addEventListener('playing',()=>requestAnimationFrame(()=>setTimeout(start,60)),{once:true}); setTimeout(start,800); }
+    else setTimeout(start,120);
+  }));
 }
 let hvIO=null;
 /* Videos written into the page as HTML get the muted *attribute* but not always the muted *property*;
