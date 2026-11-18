@@ -239,6 +239,9 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 .cta-full .btn-solid{background:#000;color:var(--white);border:1px solid rgba(255,255,255,.4)}
 .cta-full .btn-solid:hover{background:var(--white);color:var(--ink);border-color:var(--white)}
 .cta-band .cta-full h2{margin:0;width:100%;text-wrap:wrap;font-size:clamp(38px,3.3vw,calc(var(--content-max) / 27));line-height:.95}
+/* external-link arrow drawn as SVG: the ↗ character turns into a colour emoji on iPhone */
+.ext{display:inline-block;width:.9em;height:.9em;margin-left:.3em;vertical-align:-.08em;flex:none}
+.btn .ext{margin-left:-4px}
 .btn-lg{height:60px;padding:0 32px;font-size:16px}
 .contact-page{padding-top:clamp(140px,14vw,200px);min-height:calc(100vh - 1px);min-height:100svh;display:flex;align-items:center}
 .contact-page>.wrap{width:100%}
@@ -588,7 +591,7 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
     </div>
     <div class="ftr-bot">
       <span>© 2026 Silo Space Media</span>
-      <span class="ftr-contact"><span style="user-select:all">info@silospacemedia.com</span><a href="http://calendly.com/santi-silospacemedia" target="_blank" rel="noopener">Book a free call ↗</a></span>
+      <span class="ftr-contact"><span style="user-select:all">info@silospacemedia.com</span><a href="http://calendly.com/santi-silospacemedia" target="_blank" rel="noopener">Book a free call<svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.2 3H9v4.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></span>
     </div>
   </div>
 </footer>
@@ -751,7 +754,7 @@ function contactFull(){
       <div class="alt">
         <p>Sign up for a free consultation, or book a time that works for you.</p>
         <div class="row"><span class="label muted">Email</span><code>info@silospacemedia.com</code></div>
-        <div class="row"><a class="btn btn-line" href="http://calendly.com/santi-silospacemedia" target="_blank" rel="noopener">Book a free call ↗</a></div>
+        <div class="row"><a class="btn btn-line" href="http://calendly.com/santi-silospacemedia" target="_blank" rel="noopener">Book a free call<svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.2 3H9v4.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
       </div>
     </div>
     <form class="form form-card" id="lead" novalidate>
@@ -978,7 +981,7 @@ function player(v, caption){
   const cls = v.r==='916'?'r916':'r169';
   if(v.external) return `<div class="player ${cls}"><img src="${v.poster}" alt="">
      <a class="playbtn" href="${v.external}" target="_blank" rel="noopener" aria-label="${esc(v.label||'Play video')}"><span class="disc">${PLAY}</span></a>
-     <div class="cap"><span class="label">${esc(v.label||'Play')} ↗</span></div></div>`;
+     <div class="cap"><span class="label">${esc(v.label||'Play')}<svg class="ext" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9L9 3M4.2 3H9v4.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div></div>`;
   return `<div class="player ${cls}"><video preload="none" playsinline poster="${v.poster}" src="${v.src}"></video>
      <button class="playbtn" aria-label="Play video"><span class="disc">${PLAY}</span></button>
      ${caption?`<div class="cap"><span class="label">${esc(caption)}</span></div>`:''}</div>`;
