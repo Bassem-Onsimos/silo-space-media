@@ -469,11 +469,12 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 @media (max-width:900px) and (orientation:portrait){.p-hero>picture>img{object-position:50% 50% !important}}
 .p-hero>img,.p-hero>picture>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.78}
 .p-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5),rgba(0,0,0,0) 35%,rgba(0,0,0,.85))}
-.p-hero .wrap{position:relative;z-index:2;padding-top:140px;padding-bottom:clamp(32px,4vw,56px);display:grid;gap:clamp(22px,3vw,36px)}
+/* sizes also follow the screen height, so the hero fits on short laptop screens and small phones */
+.p-hero .wrap{position:relative;z-index:2;padding-top:clamp(92px,16vh,140px);padding-bottom:clamp(22px,min(4vw,5vh),56px);display:grid;gap:clamp(14px,min(3vw,3.6vh),36px)}
 .back{display:inline-flex;gap:10px;align-items:center;opacity:.85}
 .back:hover{opacity:1}
-.p-hero h1{font-size:clamp(44px,9vw,160px);font-stretch:112%}
-.p-hero .sub{font-family:var(--f-serif);font-style:italic;font-size:clamp(22px,2.6vw,38px);line-height:1.15;max-width:30ch;color:var(--fog)}
+.p-hero h1{font-size:clamp(38px,min(9vw,14vh),160px);font-stretch:112%}
+.p-hero .sub{font-family:var(--f-serif);font-style:italic;font-size:clamp(20px,min(2.6vw,4.4vh),38px);line-height:1.15;max-width:30ch;color:var(--fog)}
 .meta-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;border-top:1px solid rgba(255,255,255,.3);padding-top:20px}
 .meta-row div{display:grid;gap:6px;min-width:0}
 .meta-row span{font-size:15px}
