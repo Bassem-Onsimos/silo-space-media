@@ -221,10 +221,11 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 .f-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.6vw,22px);margin-top:clamp(40px,5vw,64px)}
 .f-strip img{width:100%;aspect-ratio:4/5;object-fit:cover;max-width:100%;filter:grayscale(1) contrast(1.05)}
 @media (max-width:700px){.f-strip{grid-template-columns:1fr}.f-strip img{aspect-ratio:3/2}}
-.f-values{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line-l);margin-top:clamp(36px,4vw,56px)}
-.f-values div{padding:clamp(22px,2.6vw,34px) 16px 0 0;font-weight:800;font-stretch:112%;text-transform:uppercase;font-size:clamp(22px,2.4vw,34px);line-height:1}
+/* equal gaps between the three values: first starts at the left edge, last ends at the right */
+.f-values{display:flex;justify-content:space-between;gap:24px;border-top:1px solid var(--line-l);margin-top:clamp(36px,4vw,56px)}
+.f-values div{flex:none;white-space:nowrap;padding:clamp(22px,2.6vw,34px) 0 0;font-weight:800;font-stretch:112%;text-transform:uppercase;font-size:clamp(22px,2.4vw,34px);line-height:1}
 .f-values span{display:block;font-family:var(--f-mono);font-size:12px;font-weight:500;letter-spacing:.14em;color:#5e5e5a;margin-bottom:14px}
-@media (max-width:700px){.f-values{grid-template-columns:1fr}.f-values div{padding-bottom:22px;border-bottom:1px solid var(--line-l)}}
+@media (max-width:700px){.f-values{flex-direction:column;gap:0}.f-values div{white-space:normal;padding-bottom:22px;border-bottom:1px solid var(--line-l)}.f-values br{display:none}}
 .f-statement{text-align:left}
 .f-statement h2{font-size:clamp(44px,8vw,calc(var(--content-max) / 9.5));font-stretch:72%}
 @media (prefers-reduced-motion:reduce){.f-badge svg{animation:none}}
@@ -469,6 +470,9 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 @media (max-width:900px) and (orientation:portrait){.p-hero>picture>img{object-position:50% 50% !important}}
 .p-hero>img,.p-hero>picture>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.78}
 .p-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5),rgba(0,0,0,0) 35%,rgba(0,0,0,.85))}
+/* the two small titles sit in dark chips (same as the card tags), so they read on any photo */
+.p-hero .back,.p-hero .kind{justify-self:start;width:fit-content;background:rgb(140 112 112 / 29%);padding:6px 10px;border-radius:4px;color:var(--white);opacity:1}
+.p-hero .back:hover{background:rgb(140 112 112 / 45%)}
 /* sizes also follow the screen height, so the hero fits on short laptop screens and small phones */
 .p-hero .wrap{position:relative;z-index:2;padding-top:clamp(92px,16vh,140px);padding-bottom:clamp(22px,min(4vw,5vh),56px);display:grid;gap:clamp(14px,min(3vw,3.6vh),36px)}
 .back{display:inline-flex;gap:10px;align-items:center;opacity:.85}
@@ -481,6 +485,8 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 @media (max-width:820px){.meta-row{grid-template-columns:1fr 1fr}}
 .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,6vw,110px);align-items:center}
 .split h2{font-size:clamp(32px,4.4vw,70px)}
+/* project pages, laptop & desktop: calmer section titles (phones keep the size above) */
+@media (min-width:901px){.view.page-projects .split h2{font-size:clamp(32px,3.3vw,52px)}}
 @media (max-width:820px){.split{grid-template-columns:1fr}}
 .player{position:relative;background:#000;overflow:hidden;max-width:100%}
 .player.r169{aspect-ratio:16/9}
@@ -515,11 +521,15 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 .deliv{align-items:center}
 .dark .pills span{border-color:var(--line-d)}
 .wide-img{width:100%;aspect-ratio:21/9;object-fit:cover;max-width:100%}
-.next{position:relative;display:block;overflow:hidden;background:#000}
+/* same height on every project page (the one-line size); content is centred, longer names wrap inside it */
+.next{position:relative;display:flex;align-items:center;overflow:hidden;background:#000;height:clamp(300px,37.6vw,574px)}
 .next img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.45;transition:opacity .4s}
 .next:hover img{opacity:.65}
-.next .wrap{position:relative;z-index:2;padding-block:clamp(90px,12vw,180px);display:grid;gap:18px}
-.next h2{font-size:clamp(44px,9vw,150px)}
+.next .wrap{position:relative;z-index:2;width:100%;padding-block:24px;display:grid;gap:18px}
+/* project name at the same size as the "Curious how we can…" title below it, on every screen */
+.next h2{font-size:clamp(38px,3.3vw,calc(var(--content-max) / 27))}
+/* wide screens: fixed 374px banner */
+@media (min-width:901px){.next{height:374px}}
 
 /* ---------- lightbox / toast ---------- */
 .lb{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.94);display:grid;place-items:center;padding:calc(64px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(64px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
@@ -545,6 +555,19 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 .vblock>.shead:first-child{padding-top:34px}
 /* a small label on the right of a header (e.g. "4 images") has no bottom margin, so it centres exactly */
 .shead>.label:last-child{margin-bottom:0}
+
+/* ---------- home page, laptop & desktop only: compact sections that each fit one screen ---------- */
+@media (min-width:901px){
+  .view.page-home .h2,.view.page-home .intro-grid h2{font-size:clamp(34px,min(4.2vw,7.4vh),66px)}
+  .view.page-home .lede{font-size:clamp(16px,1.25vw,19px)}
+  /* who we are */
+  .view.page-home .intro-grid{gap:clamp(32px,5vw,90px)}
+  .view.page-home .intro-side{gap:26px}
+  .view.page-home .prose{font-size:16px}
+  .view.page-home .stats b{font-size:clamp(26px,min(2.8vw,4.6vh),40px)}
+  .view.page-home .founder{margin-top:clamp(28px,4.4vh,56px);padding-top:22px;grid-template-columns:84px minmax(0,1fr) auto}
+  .view.page-home .founder img{width:84px;height:84px}
+}
 </style>
 
 <header class="hdr" id="hdr">
@@ -644,7 +667,7 @@ const PROJECTS = [
     tags:['Video Production','Social Media Campaign','Marketing Strategy'],
     kind:'Short-form video series', format:'Vertical video · Photo',
     subtitle:'An elevated video series built to sell',
-    cover:M('i_156fd4.jpg'), focus:'84% 50%', hero:M('hero_compass_d.jpg'), heroM:M('hero_compass_m.jpg'), preview:M('v_d878dd.mp4'), pt:1, pv:'916',
+    cover:M('i_156fd4.jpg'), focus:'84% 50%', nextFocus:'50% 35%', hero:M('hero_compass_d.jpg'), heroM:M('hero_compass_m.jpg'), preview:M('v_d878dd.mp4'), pt:1, pv:'916',
     sections:[
       {h:'Elevated video series', p:["Every piece of content is built with intention, designed to simplify the selling process, showcase smart strategy, and establish trust through consistent, high-quality storytelling. The work goes beyond just showing up online. It creates a brand presence that feels authoritative, approachable, and worth following.","The result is a steady stream of content that elevates the brand, sparks real conversations, expands visibility, and opens the door to more opportunities, more connections, and more growth."]},
       {h:'Full-scale video production and photography', p:["From strategy to delivery, the team handles every stage of the process. Content roadmaps and messaging are built around growth and attraction, with shoots planned and directed to capture both video and photography.","Every video is edited and delivered in captioned and non-captioned versions, complete with thumbnails and platform-ready assets. Captions are written in short and long form, with clear messaging and calls to action throughout. Final deliverables are organized into plug-and-play content packages, ready to post."]}
@@ -673,7 +696,7 @@ const PROJECTS = [
     tags:['Video Production','Social Media Campaign','Marketing Strategy'],
     kind:'Digital storytelling campaign', format:'Video · Photo · Social',
     subtitle:'Spotlighting custom design',
-    cover:M('i_3ec2c9.jpg'), cardFocus:'100% 100%', hero:M('hero_cab_d.jpg'), heroM:M('hero_cab_m.jpg'), preview:M('v_bb4f8f.mp4'), pt:6,
+    cover:M('i_3ec2c9.jpg'), cardFocus:'100% 100%', nextFocus:'50% 25%', hero:M('hero_cab_d.jpg'), heroM:M('hero_cab_m.jpg'), preview:M('v_bb4f8f.mp4'), pt:6,
     sections:[
       {h:'Spotlighting custom design', p:["Silo Space Media partnered with Cabinets by Design to bring their custom cabinetry to life through video, photography, and social content. From behind-the-scenes craftsmanship to finished kitchen transformations, we captured the detail and quality that sets their work apart.","The result is a content library built to showcase Cabinets by Design across social platforms, their website, and future marketing campaigns, helping potential clients see not just the product, but the craft behind it."]},
       {h:'High quality video', p:["High quality video does what photos alone cannot: it captures detail, craftsmanship, and story in a way that builds trust and drives engagement. On social media, video gets shared more and seen more. On a website, it keeps visitors engaged longer and builds confidence before they ever walk through the door.","For craftsmanship-driven businesses like custom cabinetry, video turns a finished product into a story worth sharing, and a customer worth converting."]}
@@ -687,7 +710,7 @@ const PROJECTS = [
     tags:['Video Production','Social Media Campaign'],
     kind:'Rebrand & social media campaign', format:'Video · Photo · Rebrand',
     subtitle:'Elevating a brand',
-    cover:M('i_7d6a65.jpg'), hero:M('hero_gym_d.jpg'), heroM:M('hero_gym_m.jpg'), preview:M('v_252403.mp4'), pt:3, cw:0.68,
+    cover:M('i_7d6a65.jpg'), nextFocus:'50% 10%', hero:M('hero_gym_d.jpg'), heroM:M('hero_gym_m.jpg'), preview:M('v_252403.mp4'), pt:3, cw:0.68,
     sections:[
       {h:'Elevating a brand', p:["Silo Space Media partnered with New England Academy of Gymnastics to capture the energy, skill, and spirit of their program through video, photography, and social content.","From training sessions to competition highlights, we created a content library that showcases athletes in motion and brings the program's culture to life across social platforms, the website, and future marketing efforts."]},
       {h:'Quality production', p:["High quality video paired with a strategic content plan tells the full story of what makes NE Gymnastics exceptional. From the discipline of daily training to the energy of competition day, professionally produced video brings the culture, drive, and spirit of the program to life in a way that connects with athletes, families, and the community.","A strategic approach ensures content works across social media, the website, and recruitment efforts, reaching the right audience at the right time."]}
@@ -931,7 +954,7 @@ function viewFounder(){
       <div><span class="label muted">Who we are</span><h2 class="display" style="margin-top:18px">Delivering results that <span class="serif">matter</span></h2></div>
       <div class="prose"><p>We're here to redefine how businesses show up online. By aligning your brand story with content that is purposeful, platform-specific, and engaging, we help you rise above the noise, connect authentically, and grow with confidence.</p></div>
     </div>
-    <div class="f-values"><div><span>01</span>Creativity with purpose</div><div><span>02</span>Measurable impact</div><div><span>03</span>Authenticity first</div></div>
+    <div class="f-values"><div><span>01</span>Creativity<br>with purpose</div><div><span>02</span>Measurable<br>impact</div><div><span>03</span>Authenticity<br>first</div></div>
   </div></section>
 
   <section class="band f-statement"><div class="wrap">
@@ -1002,7 +1025,7 @@ function viewProject(p){
     <div class="wrap">
       <a class="back label" href="#projects">← All projects</a>
       <div>
-        <span class="label" style="display:block;margin-bottom:18px;color:var(--fog)">${esc(p.kind)}</span>
+        <span class="label kind" style="display:block;margin-bottom:18px">${esc(p.kind)}</span>
         <h1 class="display">${esc(p.name)}</h1>
       </div>
       <p class="sub">${esc(p.subtitle)}</p>
@@ -1056,7 +1079,7 @@ function viewProject(p){
   </div></section>
 
   <a class="next" href="#project-${next.slug}">
-    <img src="${next.cover}" alt="" loading="lazy" decoding="async">
+    <img src="${next.cover}" alt="" loading="lazy" decoding="async"${next.nextFocus?` style="object-position:${next.nextFocus}"`:""}>
     <div class="wrap"><span class="label">Next project →</span><h2 class="display">${esc(next.name)}</h2><span class="muted" style="color:var(--fog)">${next.tags.map(esc).join(' · ')}</span></div>
   </a>
   ${contactBlock()}`;
@@ -1229,7 +1252,7 @@ function fitHeadings(root=document){
   $$('h1.display, h2.display, .f-hero h1',root).forEach(el=>{
     el.style.fontSize=''; if(!el.clientWidth) return;
     let size=parseFloat(getComputedStyle(el).fontSize), n=0;
-    while(el.scrollWidth>el.clientWidth+1 && size>22 && n++<40){ size-=2; el.style.fontSize=size+'px'; }
+    while(el.scrollWidth>el.clientWidth+1 && size>22 && n++<70){ size-=2; el.style.fontSize=size+'px'; }
   });
 }
 if(document.fonts) document.fonts.ready.then(()=>fitHeadings());
@@ -1327,15 +1350,17 @@ function route(){
   else if(h==='founder'){html=viewFounder(); page='founder';}
   else if(h==='contact'){html=viewContact(); page='contact';}
   else {html=viewHome();}
-  app.innerHTML=`<div class="view">${html}</div>`;
+  app.innerHTML=`<div class="view page-${page}">${html}</div>`;
   $$('[data-nav]').forEach(a=>a.classList.toggle('on',a.dataset.nav===page));
   document.body.classList.remove('menu-open');
   if(document.activeElement && document.activeElement!==document.body && !document.activeElement.closest('#app')) document.activeElement.blur();
   const want=sessionStorage_get('goto');
   if(want && $('#'+want)){ setTimeout(()=>$('#'+want).scrollIntoView({behavior:'smooth'}),60); sessionStorage_set('goto',''); }
-  else { // jump (not smooth-scroll) to the top, or the scroll sweeps past every section and reveals it early
+  else { // jump (not smooth-scroll), or the scroll sweeps past every section and reveals it early.
+    // A new page starts at the top; Back/Forward return to where the visitor was (saved in history.state).
+    const st=history.state, y=(st && typeof st.y==='number') ? st.y : 0;
     const de=document.documentElement; de.style.scrollBehavior='auto';
-    try{ window.scrollTo({top:0,left:0,behavior:'instant'}); }catch(e){ window.scrollTo(0,0); }
+    try{ window.scrollTo({top:y,left:0,behavior:'instant'}); }catch(e){ window.scrollTo(0,y); }
     requestAnimationFrame(()=>requestAnimationFrame(()=>{ de.style.scrollBehavior=''; })); }
   prepVideos(app);
   if(page==='home'){ watchHeroVideo(); watchPartners(); }
@@ -1376,6 +1401,9 @@ function onScroll(){
   scRAF=requestAnimationFrame(()=>{ scRAF=0; const s=window.scrollY>40 || !hasHero; if(s!==solid){ solid=s; HDR.classList.toggle('solid',s); } });
 }
 addEventListener('scroll',onScroll,{passive:true});
+/* remember the scroll position on the current history entry, so Back/Forward can restore it */
+let saveT=0; addEventListener('scroll',()=>{ clearTimeout(saveT); saveT=setTimeout(()=>{ try{ history.replaceState({y:Math.round(scrollY)},''); }catch(e){} },150); },{passive:true});
+if('scrollRestoration' in history) history.scrollRestoration='manual';
 addEventListener('hashchange',route);
 route();
 </script>
