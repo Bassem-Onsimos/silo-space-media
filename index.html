@@ -975,7 +975,7 @@ function viewProjects(){
     ${REEL.map((r,i)=>`<video class="reel-v${i===0?' on':''}" muted ${i===0?'autoplay ':''}playsinline webkit-playsinline loop preload="${i===0?'auto':'none'}" ${i===0?`poster="${r.poster}"`:''} src="${r.src}#t=${r.t}"${r.cw?` data-cw="${r.cw}"`:''}></video>`).join('')}
     <div class="vf label"><span class="rec"><i></i>REC</span><span class="tc" id="tc">00:00:00:00</span></div>
     <div class="hero-ui"><div class="wrap">
-      <h1 class="display">Projects<sup>(${String(PROJECTS.length).padStart(2,'0')})</sup><span class="serif">Digital storytelling, start to finish.</span></h1>
+      <h1 class="display">Projects<span class="serif">Digital storytelling, start to finish.</span></h1>
       <div class="hero-foot">
         <p class="lede">Creating engaging content that resonates with audiences across platforms is our passion. Our campaigns are strategically designed to amplify your brand's reach, foster meaningful interactions, and drive results.</p>
         <div class="reel">
