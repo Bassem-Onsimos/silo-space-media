@@ -621,7 +621,7 @@ const PROJECTS = [
     tags:['Content Strategy','Video Production','Marketing Strategy'],
     kind:'Docuseries', format:'Long-form · Short-form · Social',
     subtitle:'Driven by Diversity: Exploring the MBTA Experience',
-    cover:M('cv_mbta.jpg'), hero:M('hero_mbta_d.jpg'), heroM:M('hero_mbta_m.jpg'), preview:M('mbta_clip.mp4'), pt:0,
+    cover:M('cv_mbta.jpg'), pt:0.85, hero:M('hero_mbta_d.jpg'), heroM:M('hero_mbta_m.jpg'), preview:M('mbta_clip.mp4'),
     sections:[
       {h:'Tell your story', p:["Telling the human story behind one of the country's most diverse transit systems, our team executed from concept to screen: writing, producing, directing, and editing a documentary series that gave riders and recruits alike a new way to see the MBTA.","Through intimate interviews, ride-a-longs, and candid testimonials, the series brought the real stories of bus operators and employees to life, spotlighting the people who keep the city moving every day."]},
       {h:'A full-scale content campaign', p:["Complemented by short-form social media content, our team delivered a full-scale content campaign that was equal parts compelling storytelling and strategic recruitment marketing, inviting audiences across platforms to see the MBTA in a new light and explore new opportunities."]}
@@ -714,7 +714,7 @@ const SERVICES = [
 
 const REEL = [
   {slug:'ne-academy-of-gymnastics', src:M('hd_252403.mp4'), iosP:M('pt_gym.mp4'), iosL:M('v_252403.mp4'), poster:M('po_252403.jpg'), t:3, cw:0.68},
-  {slug:'mbta', src:M('mbta_clip.mp4'), iosP:M('pt_mbta.mp4'), iosL:M('mbta_clip.mp4'), poster:M('po_702212.jpg'), t:0},
+  {slug:'mbta', src:M('mbta_clip.mp4'), iosP:M('pt_mbta.mp4'), iosL:M('mbta_clip.mp4'), poster:M('po_702212.jpg'), t:0.85, p0:0.85},
   {slug:'cabinets-by-design', src:M('hd_bb4f8f.mp4'), iosP:M('pt_cab.mp4'), iosL:M('v_bb4f8f.mp4'), poster:M('po_bb4f8f.jpg'), t:15},
   {slug:'village-home-services', src:M('hd_7413fd.mp4'), iosP:M('pt_vil.mp4'), iosL:M('v_7413fd.mp4'), poster:M('po_7413fd.jpg'), t:11}
 ];
@@ -1060,6 +1060,9 @@ function wireCards(root=document){
     if(c.dataset.wired) return; c.dataset.wired=1;
     const src=c.dataset.preview, v=$('video',c), f=$('.frame',c);
     if(!src||!v||!fine) return;
+    // a preview with a start point loops back to that point, not to 0
+    const t0=+(src.split('#t=')[1]||0);
+    if(t0>0){ v.loop=false; v.addEventListener('ended',()=>{ v.currentTime=t0; v.play().catch(()=>{}); }); }
     let hoverT;
     c.addEventListener('mouseenter',()=>{
       // short delay so sweeping the mouse across the grid doesn't start several videos
@@ -1138,7 +1141,7 @@ function startReel(){
   // upright phone: short pre-cropped clips (already start at the right moment); Safari landscape: 720p originals
   const PORTRAIT = NEEDS_BLOB && innerHeight>innerWidth;
   const clipSrc=k=> PORTRAIT ? REEL[k].iosP : (NEEDS_BLOB ? REEL[k].iosL : REEL[k].src);
-  const startAt=k=> PORTRAIT ? 0 : REEL[k].t;
+  const startAt=k=> PORTRAIT ? (REEL[k].p0||0) : REEL[k].t;
   if(PORTRAIT) vids.forEach(v=>{ v.removeAttribute('data-cw'); v.style.removeProperty('--z'); });
   const park=k=>{ const v=vids[k], t=startAt(k);
     const ready = NEEDS_BLOB ? blobify(v, clipSrc(k)) : Promise.resolve();
