@@ -535,7 +535,9 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 /* ---------- lightbox / toast ---------- */
 .lb{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.94);display:grid;place-items:center;padding:calc(64px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(64px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .lb img{max-height:100%;max-width:100%;object-fit:contain;will-change:transform}
-.lb{touch-action:none}   /* the viewer handles horizontal swipes itself */
+.lb{touch-action:none}
+@media (max-width:900px){.shead .lb-hint{display:none}}
+.lb img{transform-origin:center center;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}   /* the viewer handles horizontal swipes itself */
 .lb .x{position:absolute;top:calc(16px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));width:48px;height:48px;border-radius:50%;border:1px solid var(--line-d);font-size:22px}
 .lb .nv{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.1);font-size:20px}
 .lb .pv{left:max(16px,env(safe-area-inset-left,0px))}
@@ -648,7 +650,7 @@ const PROJECTS = [
     videos:[{src:M('v_d7afd5.mp4'),poster:M('po_d7afd5.jpg'),r:'169'}],
     photos:[M('i_9d33cd.jpg'),M('i_704822.jpg'),M('i_cbba31.jpg'),M('i_a7b579.jpg')],
     dlabel:'What we deliver',
-    deliverables:['Digital storytelling campaign','Full-scale video production','Sports photography','Brand storytelling','Narrative-driven content series','Brand integration','Long-form content series','Sports marketing','Social media campaign','Documentary-style video','Live event videography','Content series production']
+    deliverables:['Digital storytelling campaign','Full-scale video production','Live event videography','Sports photography','Brand storytelling','Content series production','Narrative-driven content series','Long-form content series','Brand integration','Sports marketing','Social media campaign','Documentary-style video']
   },
   { slug:'mbta', name:'MBTA',
     tags:['Content Strategy','Video Production','Marketing Strategy'],
@@ -705,7 +707,7 @@ const PROJECTS = [
     videos:[{src:M('v_bb4f8f.mp4'),poster:M('po_bb4f8f.jpg'),r:'169'},{src:M('v_3331f7.mp4'),poster:M('po_3331f7.jpg'),r:'916'}],
     photos:[M('i_3e6bc7.jpg'),M('i_8469d6.jpg'),M('i_37f843.jpg'),M('i_3ec2c9.jpg')],
     dlabel:'What we deliver',
-    deliverables:['Digital storytelling campaign','Full-scale video production','Brand storytelling','Brand integration','Social media campaign','Documentary-style video','Content series production','High quality photos']
+    deliverables:['Digital storytelling campaign','Full-scale video production','Brand integration','Brand storytelling','Social media campaign','Documentary-style video','High quality photos','Content series production']
   },
   { slug:'ne-academy-of-gymnastics', name:'NE Academy of Gymnastics',
     tags:['Video Production','Social Media Campaign'],
@@ -955,7 +957,7 @@ function viewFounder(){
       <div><span class="label muted">Who we are</span><h2 class="display" style="margin-top:18px">Delivering results that <span class="serif">matter</span></h2></div>
       <div class="prose"><p>We're here to redefine how businesses show up online. By aligning your brand story with content that is purposeful, platform-specific, and engaging, we help you rise above the noise, connect authentically, and grow with confidence.</p></div>
     </div>
-    <div class="f-values"><div><span>01</span>Creativity<br>with purpose</div><div><span>02</span>Measurable<br>impact</div><div><span>03</span>Authenticity<br>first</div></div>
+    <div class="f-values"><div><span>01</span>Creativity <br>with purpose</div><div><span>02</span>Measurable <br>impact</div><div><span>03</span>Authenticity <br>first</div></div>
   </div></section>
 
   <section class="band f-statement"><div class="wrap">
@@ -1065,7 +1067,7 @@ function viewProject(p){
   ${p.wide?`<section style="padding-bottom:clamp(72px,10vw,150px)"><div class="wrap"><img class="wide-img" src="${p.wide}" alt="" loading="lazy" decoding="async"></div></section>`:''}
 
   ${p.photos.length?`<section class="band" style="padding-top:0"><div class="wrap vblock">
-    <div class="shead" style="margin-bottom:0"><div><span class="label muted">Stills</span><h2 class="display h3" style="margin-top:14px">Photography</h2></div><span class="label muted">Tap to enlarge</span></div>
+    <div class="shead" style="margin-bottom:0"><div><span class="label muted">Stills</span><h2 class="display h3" style="margin-top:14px">Photography</h2></div><span class="label muted lb-hint">Tap to enlarge</span></div>
     <div class="gallery">${p.photos.map((src,k)=>`<button data-lb="${k}" aria-label="Open image ${k+1}"><img src="${src}" alt="${esc(p.name)} photo ${k+1}" loading="lazy" decoding="async"></button>`).join('')}</div>
   </div></section>`:''}
 
@@ -1152,19 +1154,41 @@ function openLB(list, i){
     document.body.appendChild(el);
     el.addEventListener('click',e=>{ if(e.target===el||e.target.classList.contains('x')) closeLB(); });
     $('.pv',el).onclick=()=>stepLB(-1); $('.nx',el).onclick=()=>stepLB(1);
-    // swipe: the photo follows the finger; past a threshold it slides out and the next one slides in
-    const img=$('img',el); let x0=null, y0=0, dx=0, busy=false;
-    const set=(x,o,t)=>{ img.style.transition=t?'transform .22s ease-out, opacity .22s ease-out':'none'; img.style.transform=x?`translateX(${x}px)`:''; img.style.opacity=o; };
-    el.addEventListener('touchstart',e=>{ if(busy||e.touches.length>1) return; x0=e.touches[0].clientX; y0=e.touches[0].clientY; dx=0; },{passive:true});
-    el.addEventListener('touchmove',e=>{ if(x0===null) return; dx=e.touches[0].clientX-x0; if(Math.abs(dx)>Math.abs(e.touches[0].clientY-y0)) set(dx,1-Math.min(Math.abs(dx)/innerWidth,.5),false); },{passive:true});
-    el.addEventListener('touchend',()=>{ if(x0===null) return; x0=null;
-      if(Math.abs(dx)<50 || lbList.length<2){ set(0,1,true); return; }
-      const d=dx<0?1:-1; busy=true; set(-d*innerWidth,0,true);
-      setTimeout(()=>{ stepLB(d); set(d*innerWidth*0.4,0,false); requestAnimationFrame(()=>requestAnimationFrame(()=>{ set(0,1,true); setTimeout(()=>{ busy=false; },230); })); },220); });
+    // Gestures. Not zoomed: swipe left/right changes photo (the photo follows the finger).
+    // Pinch or double-tap zooms (up to 4x); while zoomed, one finger pans and swiping does not change photo.
+    const img=$('img',el); let busy=false, sc=1, tx=0, ty=0, mode=null, x0=0, y0=0, dx=0, sd=0, ss=1, mx=0, my=0, ptx=0, pty=0, lastTap=0;
+    const dist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+    const mid=t=>[(t[0].clientX+t[1].clientX)/2,(t[0].clientY+t[1].clientY)/2];
+    const bound=()=>{ const mxX=Math.max(0,(img.offsetWidth*sc-innerWidth)/2), mxY=Math.max(0,(img.offsetHeight*sc-innerHeight)/2);
+      tx=Math.max(-mxX,Math.min(mxX,tx)); ty=Math.max(-mxY,Math.min(mxY,ty)); };
+    const draw=(anim,op=1,slide=0)=>{ img.style.transition=anim?'transform .25s ease-out, opacity .22s ease-out':'none';
+      img.style.transform=(slide||sc!==1||tx||ty)?`translate(${slide||tx}px,${ty}px) scale(${sc})`:''; img.style.opacity=op; };
+    // zoom to scale s keeping the screen point (px,py) still
+    const zoomAt=(s2,px,py,anim)=>{ const cx=innerWidth/2, cy=innerHeight/2, k=s2/sc;
+      tx=(px-cx)-(px-cx-tx)*k; ty=(py-cy)-(py-cy-ty)*k; sc=s2; if(sc<=1.01){ sc=1; tx=0; ty=0; } bound(); draw(anim); };
+    el._resetZoom=()=>{ sc=1; tx=0; ty=0; draw(false); };
+    el.addEventListener('touchstart',e=>{ if(busy) return; const t=e.touches;
+      if(t.length===2){ mode='pinch'; sd=dist(t); ss=sc; [mx,my]=mid(t); ptx=tx; pty=ty; return; }
+      const now=Date.now(), x=t[0].clientX, y=t[0].clientY;
+      if(now-lastTap<300 && e.target===img){ lastTap=0; mode=null; zoomAt(sc>1?1:2.5,x,y,true); return; }
+      lastTap=now; x0=x; y0=y; dx=0; ptx=tx; pty=ty; mode = sc>1 ? 'pan' : 'swipe'; },{passive:true});
+    el.addEventListener('touchmove',e=>{ const t=e.touches;
+      if(mode==='pinch' && t.length===2){ const s2=Math.max(1,Math.min(4,ss*dist(t)/sd)), [nx,ny]=mid(t);
+        tx=ptx; ty=pty; const keep=sc; sc=ss; zoomAt(s2,mx,my,false); tx+=nx-mx; ty+=ny-my; bound(); draw(false); return; }
+      if(mode==='pan'){ tx=ptx+(t[0].clientX-x0); ty=pty+(t[0].clientY-y0); bound(); draw(false); return; }
+      if(mode==='swipe'){ dx=t[0].clientX-x0; if(Math.abs(dx)>Math.abs(t[0].clientY-y0)) draw(false,1-Math.min(Math.abs(dx)/innerWidth,.5),dx); } },{passive:true});
+    el.addEventListener('touchend',e=>{
+      if(mode==='pinch'){ if(e.touches.length===1){ mode='pan'; x0=e.touches[0].clientX; y0=e.touches[0].clientY; ptx=tx; pty=ty; } else mode=null; if(sc<1.05){ sc=1; tx=0; ty=0; draw(true); } return; }
+      if(mode!=='swipe'){ mode=null; return; } mode=null;
+      if(Math.abs(dx)<50 || lbList.length<2){ draw(true,1,0); return; }
+      const d=dx<0?1:-1; busy=true; draw(true,0,-d*innerWidth);
+      setTimeout(()=>{ stepLB(d); draw(false,0,d*innerWidth*0.4); requestAnimationFrame(()=>requestAnimationFrame(()=>{ draw(true,1,0); setTimeout(()=>{ busy=false; },230); })); },220); });
+    // laptop: double-click zooms in at the pointer / back out
+    img.addEventListener('dblclick',e=>zoomAt(sc>1?1:2.5,e.clientX,e.clientY,true));
   }
   el.hidden=false; showLB(); $('.x',el).focus();
 }
-function showLB(){const el=$('#lb');$('img',el).src=lbList[lbIdx];$('.count',el).textContent=`${lbIdx+1} / ${lbList.length}`;}
+function showLB(){const el=$('#lb'); if(el._resetZoom) el._resetZoom(); $('img',el).src=lbList[lbIdx];$('.count',el).textContent=`${lbIdx+1} / ${lbList.length}`;}
 function stepLB(d){lbIdx=(lbIdx+d+lbList.length)%lbList.length;showLB();}
 function closeLB(){const el=$('#lb'); if(el) el.hidden=true;}
 document.addEventListener('keydown',e=>{const el=$('#lb'); if(!el||el.hidden) return; if(e.key==='Escape')closeLB(); if(e.key==='ArrowRight')stepLB(1); if(e.key==='ArrowLeft')stepLB(-1);});
