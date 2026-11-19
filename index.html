@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel=icon href="media/logo.png"><link rel=apple-touch-icon href="media/logo.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Silo Space Media Redesign</title>
+<title>Silo Space Media</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -508,7 +508,7 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 .vblock{display:grid;gap:clamp(28px,3vw,44px)}
 .stats-band{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line-d)}
 .stats-band div{padding:28px 20px 0 0;display:grid;gap:10px}
-.stats-band b{font-weight:900;font-stretch:122%;font-size:clamp(48px,7vw,120px);line-height:.9;font-variant-numeric:tabular-nums}
+.stats-band b{font-weight:900;font-stretch:122%;font-size:clamp(40px,5.6vw,68px);line-height:.9;font-variant-numeric:tabular-nums}
 .stats-band span{color:var(--fog);max-width:28ch}
 @media (max-width:640px){.stats-band{grid-template-columns:1fr}}
 .gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,1.6vw,22px)}
@@ -1406,7 +1406,7 @@ function route(){
   wireCards(app); wirePlayers(); wireForm(); fitPillar(app); fitHeadings(app); watchReveal(app);
   $$('[data-lb]',app).forEach(b=>b.addEventListener('click',()=>{const p=bySlug(h.slice(8)); openLB(p.photos,+b.dataset.lb);}));
   const p=bySlug(h.slice(8));
-  document.title = page==='contact' ? 'Get in Touch · Silo Space Media' : page==='founder' ? 'Meet the Founder · Silo Space Media' : p ? `${p.name} · Silo Space Media` : page==='projects' ? 'Projects · Silo Space Media' : 'Silo Space Media Redesign';
+  document.title = page==='contact' ? 'Get in Touch · Silo Space Media' : page==='founder' ? 'About · Silo Space Media' : p ? `${p.name} · Silo Space Media` : page==='projects' ? 'Projects · Silo Space Media' : 'Silo Space Media';
   hasHero=!!$('.hero, .p-hero, .f-hero'); solid=null; onScroll();
 }
 let pendingGoto='';
