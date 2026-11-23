@@ -1840,13 +1840,15 @@ button:hover .arrow {
   width: 100%;
   justify-content: center;
 }
-@media (min-width: 821px) {
+/* Two layouts: side by side (laptops, desktops, tablets held sideways) and one column (phones, small tablets and every
+   upright iPad: any upright screen up to 1100px wide). The two lists of screens below are exact opposites. */
+@media (min-width: 1101px), (min-width: 821px) and (orientation: landscape) {
   .form-card .btn {
     width: auto;
   }
 }
-/* laptops and up: one screen, no scrolling — less top padding, the card sits higher and is more compact */
-@media (min-width: 821px) {
+/* side by side: one screen, no scrolling — less top padding, the card sits higher and is more compact */
+@media (min-width: 1101px), (min-width: 821px) and (orientation: landscape) {
   .contact-page {
     padding-top: calc(var(--header-height) + clamp(20px, 3vh, 40px));
     padding-bottom: clamp(20px, 3vh, 40px);
@@ -1879,7 +1881,7 @@ button:hover .arrow {
   }
 }
 /* medium screens (tablet landscape / small laptops): give the form more than half the width */
-@media (min-width: 821px) and (max-width: 1199px) {
+@media (min-width: 1101px) and (max-width: 1199px), (min-width: 821px) and (max-width: 1199px) and (orientation: landscape) {
   .contact-page .contact-grid {
     grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
     gap: clamp(28px, 4vw, 56px);
@@ -1888,7 +1890,8 @@ button:hover .arrow {
     font-size: clamp(36px, 4.6vw, 56px);
   }
 }
-@media (max-width: 820px) {
+/* one column */
+@media (max-width: 820px), (max-width: 1100px) and (orientation: portrait) {
   .contact-grid {
     grid-template-columns: 1fr;
   }
@@ -3037,11 +3040,20 @@ button:hover .arrow {
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
 }
+.podcast-hero .meta-episodes {
+  justify-content: center;
+}
+.podcast-hero .meta-social {
+  justify-content: flex-end;
+}
 /* where the details row drops to two columns (see .meta-row in project-page.css), only Episodes and
    Find us on are shown, so it stays one line */
 @media (max-width: 820px) {
   .podcast-hero .meta-hosts {
     display: none;
+  }
+  .podcast-hero .meta-episodes {
+    justify-content: flex-start;
   }
 }
 /* YouTube and the show's social accounts: plain white icons, the height of the text beside them */
@@ -3060,13 +3072,13 @@ button:hover .arrow {
   opacity: 1;
 }
 .podcast-hero .meta-icon-links svg {
-  width: 19px;
-  height: 19px;
+  width: 22px;
+  height: 22px;
 }
 /* the YouTube mark is wide and short, so it gets a little more width to look the same size */
 .podcast-hero .meta-icon-links a[aria-label*='YouTube'] svg {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
 }
 /* phones: bigger icons, each with a tap area of at least 44px (the padding is cancelled by the negative margin, so
    the icons stay in line with the text and the spacing between them looks the same) */
@@ -3559,8 +3571,8 @@ button:hover .arrow {
   opacity: 1;
 }
 .host .host-social svg {
-  width: 19px;
-  height: 19px;
+  width: 22px;
+  height: 22px;
 }
 .host .host-social-below {
   display: none;
@@ -3658,6 +3670,10 @@ button:hover .arrow {
   }
 }
 
+.podcast-services .feature-photo img {
+  object-fit: contain;
+  background-color: black;
+}
 /* "What we do" (podcasts page): calmer heading and a taller mic photo on laptops/desktops; phones unchanged */
 .podcast-services .feature-text h2 {
   font-size: clamp(40px, 5.6vw, 52px);
@@ -3673,15 +3689,13 @@ button:hover .arrow {
 }
 @media (min-width: 1024px) {
   .podcast-services .feature-photo img {
-    aspect-ratio: 2/3;
+    aspect-ratio: 2/3.5;
   }
 }
-/* in the tall 2:4 box the photo zooms out to its full width; the extra height is black, matching the photo's own backdrop */
 @media (min-width: 861px) and (max-width: 1023px) {
   .podcast-services .feature-photo img {
     aspect-ratio: 2/4;
-    object-fit: contain;
-    background: #000;
+    object-position: center;
   }
 }
 @media (min-width: 1024px) and (max-width: 1199px) {

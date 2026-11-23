@@ -115,9 +115,10 @@ export function setUpScrollReveal() {
       return;
     } // pinned to the corner: fade in place, no slide
     if (element.matches('.service-card')) {
-      // fade the card face: fading the 3D card forces a full redraw
+      // reveal the card's front face (it fades and rises like everything else): animating the whole 3D card forces
+      // a full redraw, and the face has no transform of its own while the card is unflipped
       const front = element.querySelector('.service-card-front');
-      if (front) markForReveal(front, index, 'reveal-fade-pending');
+      if (front) markForReveal(front, index);
       return;
     }
     if (element.matches(STAGGERED_CONTAINERS) || isTallBlock(element))
