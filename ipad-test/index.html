@@ -10,6 +10,7 @@
   .probe { position: absolute; top: 0; left: -10px; width: 1px; visibility: hidden; }
   #top { padding: 120px 24px 24px; background: #224; color: #fff; }
   #top a { color: #9cf; display: block; margin: 12px 0; }
+  #vals { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 20; background: rgba(0, 0, 0, 0.82); color: #fff; padding: 16px 20px; border-radius: 14px; font-size: 18px; pointer-events: none; }
   #vals b { display: inline-block; min-width: 170px; }
   .band { height: 160px; display: flex; align-items: center; padding: 0 24px; font-size: 44px; font-weight: 800; }
   .band:nth-child(odd) { background: #e33; color: #fff; }
@@ -60,6 +61,7 @@
       ['safe top / bottom', h('p-sat') + ' / ' + h('p-sab')],
       ['bar top / bottom', r ? r.top.toFixed(1) + ' / ' + r.bottom.toFixed(1) : '-'],
       ['scrollY', Math.round(scrollY)],
+      ['test', v],
     ].map(([k, val]) => '<b>' + k + '</b> ' + val).join('<br>');
   }
   show(); addEventListener('scroll', show, { passive: true }); addEventListener('resize', show); setInterval(show, 500);
