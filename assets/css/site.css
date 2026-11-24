@@ -1124,16 +1124,18 @@ button:hover .arrow {
    fixed to the bottom of the screen (clipped or not) and kept it black past the banner, but it ignores pseudo-elements.
    The image (set as --banner-image in partials/contact-banner.njk) is sized to the screen at its largest (100lvh) and
    anchored at the top, so it doesn't move when the phone's toolbar grows or shrinks; the SVG fills any box like
-   cover (preserveAspectRatio slice). */
+   cover (preserveAspectRatio slice).
+   It reaches half a screen below the page area: Safari 26 draws the page behind its toolbar, below the page area,
+   where a layer sized to the page area left the banner's own grey showing; below the image, its base black. */
 .contact-banner {
   clip-path: inset(0);
 }
 .contact-banner::before {
   content: '';
   position: fixed;
-  inset: 0;
+  inset: 0 0 -50lvh;
   will-change: transform;
-  background: var(--banner-image) top center / 100% 100lvh no-repeat;
+  background: #000 var(--banner-image) top center / 100% 100lvh no-repeat;
   pointer-events: none;
   z-index: 0;
 }
