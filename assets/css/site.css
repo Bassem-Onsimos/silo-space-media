@@ -624,18 +624,20 @@ button:hover .arrow {
   }
 }
 
-/* Safari on iPhone floats a see-through toolbar over the bottom of the page, and a full-screen hero (sized to the
-   screen with the toolbar showing) ends where the toolbar starts, so the next section shows through it. While the page
-   is at the top, a black strip the toolbar's height covers that band; it fades as you scroll, and the page then runs
-   under the toolbar as usual. Safari on iPhone and iPad only (-webkit-touch-callout): Chrome on Android shrinks a bar at
-   the top, and a strip at the bottom there would cover the hero. Where the toolbar doesn't shrink (iPad, desktop), the
-   height is 0. Below the menu (45) and the header (50). */
+/* Safari on iPhone floats a see-through toolbar below the page area, and a full-screen hero (100svh) ends where the
+   toolbar starts, so the next section shows through it. Safari fills its toolbar area with the colour of an element
+   pinned to the bottom of the page area, if it is at least about 8px tall (4px is ignored; measured on iOS 26). So while
+   the page is at the top, a thin black strip there turns the toolbar area black; it covers only the hero's darkest
+   bottom 8px. It fades over the first 120px of scrolling, and the page then runs under the toolbar as usual.
+   Safari on iPhone and iPad only (-webkit-touch-callout): Chrome on Android shrinks a bar at the top, where a strip at
+   the bottom makes no sense. Where the toolbar doesn't shrink (iPad, desktop), min() makes it 0. Below the menu (45)
+   and the header (50). */
 @supports (-webkit-touch-callout: none) {
   :is(.page-home, .page-projects, .page-podcasts, .page-about)::after {
     content: '';
     position: fixed;
     inset: auto 0 0;
-    height: calc(100lvh - 100svh);
+    height: min(8px, 100lvh - 100svh);
     background: #050505;
     pointer-events: none;
     z-index: 40;
