@@ -1133,6 +1133,10 @@ button:hover .arrow {
   pointer-events: none;
   z-index: 0;
 }
+/* hidden while the banner is out of view, so Safari doesn't colour its toolbar from it (scripts/modules/contact-banner.js) */
+.contact-banner.is-off-screen .contact-banner-background {
+  visibility: hidden;
+}
 .contact-banner-content {
   display: grid;
   gap: clamp(20px, 2.4vw, 32px);

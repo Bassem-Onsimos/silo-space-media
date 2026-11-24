@@ -18,6 +18,7 @@ import { setUpContactForm } from './modules/contact-form.js';
 import { setUpHeadingFitting } from './modules/fit-headings.js';
 import { setUpScrollReveal } from './modules/scroll-reveal.js';
 import { setUpLabelRoom } from './modules/label-room.js';
+import { setUpContactBanner } from './modules/contact-banner.js';
 import { findOne } from './modules/dom.js';
 
 function startFeatures() {
@@ -44,6 +45,7 @@ function startFeatures() {
   setUpContactForm();
 
   // Every page
+  setUpContactBanner();
   const fitHeadings = setUpHeadingFitting();
   setUpLabelRoom(); // after the headings are fitted: it measures them
   setUpScrollReveal();
