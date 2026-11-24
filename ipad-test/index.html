@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>iPad top bar test</title>
+<style>
+  html, body { margin: 0; background: #f0efe9; font: 600 20px/1.4 -apple-system, sans-serif; color: #111; }
+  .probe { position: absolute; top: 0; left: -10px; width: 1px; visibility: hidden; }
+  #top { padding: 120px 24px 24px; background: #224; color: #fff; }
+  #top a { color: #9cf; display: block; margin: 12px 0; }
+  #vals b { display: inline-block; min-width: 170px; }
+  .band { height: 160px; display: flex; align-items: center; padding: 0 24px; font-size: 44px; font-weight: 800; }
+  .band:nth-child(odd) { background: #e33; color: #fff; }
+  .band:nth-child(even) { background: #fff; color: #e33; }
+  /* the variants, all black, 70px tall like a header unless noted */
+  .bar { position: fixed; left: 0; right: 0; background: #050505; color: #fff; font-size: 14px; display: flex; align-items: flex-end; padding: 0 0 6px 24px; box-sizing: border-box; z-index: 10; }
+  .v-el-top .bar { top: 0; height: 70px; }
+  .v-el-safe .bar { top: env(safe-area-inset-top, 0px); height: 70px; }
+  .v-el-thin .bar { top: 0; height: 8px; padding: 0; }
+  .v-pseudo body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 70px; background: #050505; z-index: 10; }
+  .v-el-up .bar { top: -100px; height: 170px; }
+</style>
+</head>
+<body>
+<div class="probe" id="p-vh" style="height:100vh"></div>
+<div class="probe" id="p-svh" style="height:100svh"></div>
+<div class="probe" id="p-lvh" style="height:100lvh"></div>
+<div class="probe" id="p-dvh" style="height:100dvh"></div>
+<div class="probe" id="p-sat" style="height:env(safe-area-inset-top,0px)"></div>
+<div class="probe" id="p-sab" style="height:env(safe-area-inset-bottom,0px)"></div>
+<section id="top">
+  <b id="which"></b>
+  <div id="vals"></div>
+  <a href="?v=none">A: nothing at the top</a>
+  <a href="?v=el-top">B: black bar at top 0, 70px (like the header)</a>
+  <a href="?v=el-safe">C: black bar below the safe area (how the header is now)</a>
+  <a href="?v=el-thin">D: black bar at top 0, 8px</a>
+  <a href="?v=pseudo">E: black ::before at top 0, 70px</a>
+  <a href="?v=el-up">F: black bar reaching 100px above the top</a>
+</section>
+<div id="bands"></div>
+<script>
+  const v = new URLSearchParams(location.search).get('v') || 'none';
+  document.getElementById('which').textContent = 'Showing: ' + v;
+  if (v !== 'none') document.documentElement.classList.add('v-' + v);
+  if (v.startsWith('el')) { const d = document.createElement('div'); d.className = 'bar'; d.textContent = 'fixed bar'; document.body.appendChild(d); }
+  const bands = document.getElementById('bands');
+  for (let i = 1; i <= 20; i++) { const d = document.createElement('div'); d.className = 'band'; d.textContent = 'BAND ' + i; bands.appendChild(d); }
+  const h = (id) => document.getElementById(id).getBoundingClientRect().height.toFixed(1);
+  function show() {
+    const bar = document.querySelector('.bar'), r = bar && bar.getBoundingClientRect();
+    document.getElementById('vals').innerHTML = [
+      ['innerWidth×Height', innerWidth + ' × ' + innerHeight],
+      ['screen', screen.width + ' × ' + screen.height],
+      ['visualVP', window.visualViewport ? visualViewport.width.toFixed(0) + ' × ' + visualViewport.height.toFixed(1) + ' @ ' + visualViewport.offsetTop.toFixed(1) : '-'],
+      ['100vh / svh', h('p-vh') + ' / ' + h('p-svh')],
+      ['100lvh / dvh', h('p-lvh') + ' / ' + h('p-dvh')],
+      ['safe top / bottom', h('p-sat') + ' / ' + h('p-sab')],
+      ['bar top / bottom', r ? r.top.toFixed(1) + ' / ' + r.bottom.toFixed(1) : '-'],
+      ['scrollY', Math.round(scrollY)],
+    ].map(([k, val]) => '<b>' + k + '</b> ' + val).join('<br>');
+  }
+  show(); addEventListener('scroll', show, { passive: true }); addEventListener('resize', show); setInterval(show, 500);
+</script>
+</body>
+</html>
