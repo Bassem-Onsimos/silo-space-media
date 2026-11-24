@@ -17,10 +17,16 @@
   (function detectFloatingToolbar() {
     var ua = navigator.userAgent;
     var isAppleTouch = /iP(hone|ad|od)/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
-    var isOtherBrowser = /CriOS|FxiOS|EdgiOS|OPiOS|OPT\/|Ddg\/|GSA\/|YaBrowser/.test(ua);
+    // other browsers name themselves in the user agent, except in desktop mode on iPad, where Chrome and Firefox send
+    // Safari's; they still add their own script objects to every page
+    var isOtherBrowser =
+      /CriOS|FxiOS|EdgiOS|OPiOS|OPT\/|Ddg\/|GSA\/|YaBrowser/.test(ua) || '__gCrWeb' in window || '__firefox__' in window;
     var version = /Version\/(\d+)/.exec(ua);
     if (isAppleTouch && !isOtherBrowser && /Safari\//.test(ua) && version && +version[1] >= 26) {
       document.documentElement.classList.add('has-floating-toolbar');
+      // iPad (it reports itself as an iPad, or as a Mac with a touch screen): Safari's bar is at the top
+      var isIPad = /iPad/.test(ua) || /Macintosh/.test(ua);
+      if (isIPad) document.documentElement.classList.add('has-top-toolbar');
     }
   })();
 </script>

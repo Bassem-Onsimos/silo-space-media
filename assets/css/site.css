@@ -240,11 +240,12 @@ button:hover .arrow {
    taller (pseudo-elements are ignored), but only if it is there from the start: it ignored the header turning black
    later, and strips that appear on scroll, inside or outside the header (all measured on an iPad). So a thin black
    strip is always at the top edge, and the top bar is always black, joined to the header (also over a hero, like the
-   area at the top on an iPhone). Safari 26+ only (.has-floating-toolbar, set in layouts/base.njk). */
+   area at the top on an iPhone). iPad Safari 26+ only (.has-top-toolbar, set in layouts/base.njk): on an iPhone the
+   bar is at the bottom and the area at the top is already black, so the strip only showed as a band over the hero. */
 .top-strip {
   display: none;
 }
-.has-floating-toolbar .top-strip {
+.has-top-toolbar .top-strip {
   display: block;
   position: fixed;
   inset: 0 0 auto;
