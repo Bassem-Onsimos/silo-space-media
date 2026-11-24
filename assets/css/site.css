@@ -2523,16 +2523,31 @@ button:hover .arrow {
   }
 }
 
-/* ---------- lightbox (full-screen photo viewer) ---------- */
+/* ---------- lightbox (full-screen photo viewer) ----------
+   The photo fills the screen (only the notch and rounded corners are kept clear) and the controls float over it.
+   The grid's one row and column are exactly the viewer's size, so the photo's max-height/max-width fit it to the
+   screen (an auto-sized grid row grew to the photo's own height, and tall photos ran off the screen). */
 .lightbox {
   position: fixed;
   inset: 0;
   z-index: 80;
-  background: rgba(0, 0, 0, 0.94);
+  background: #000;
   display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
   place-items: center;
-  padding: calc(64px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px))
-    calc(64px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px)
+    env(safe-area-inset-left, 0px);
+}
+/* a soft shade under the close button and the count, so they stay readable over bright photos */
+.lightbox::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: calc(96px + env(safe-area-inset-top, 0px));
+  background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.25s;
 }
 .lightbox img {
   max-height: 100%;
@@ -2561,7 +2576,8 @@ button:hover .arrow {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  border: 1px solid var(--line-d);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.45);
   font-size: 22px;
 }
 .lightbox .lightbox-arrow {
@@ -2571,8 +2587,15 @@ button:hover .arrow {
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   font-size: 20px;
+}
+/* touch screens swipe between photos, so no arrows over the photo */
+@media (hover: none) {
+  .lightbox .lightbox-arrow {
+    display: none;
+  }
 }
 .lightbox .lightbox-previous {
   left: max(16px, env(safe-area-inset-left, 0px));
@@ -2582,9 +2605,25 @@ button:hover .arrow {
 }
 .lightbox .lightbox-count {
   position: absolute;
-  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
-  left: 50%;
-  transform: translateX(-50%);
+  top: calc(16px + env(safe-area-inset-top, 0px));
+  left: max(16px, env(safe-area-inset-left, 0px));
+  height: 48px;
+  display: flex;
+  align-items: center;
+}
+.lightbox-close,
+.lightbox-arrow,
+.lightbox-count {
+  z-index: 2;
+  transition: opacity 0.25s;
+}
+/* a tap on the photo hides the controls for a clean view; another tap brings them back */
+.lightbox.controls-hidden::before,
+.lightbox.controls-hidden .lightbox-close,
+.lightbox.controls-hidden .lightbox-arrow,
+.lightbox.controls-hidden .lightbox-count {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ---------- shared vertical alignment ----------
