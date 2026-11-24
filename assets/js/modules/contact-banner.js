@@ -8,6 +8,8 @@ import { findAll } from './dom.js';
  * scrolls in, so it is never seen missing.
  */
 export function setUpContactBanner() {
+  // only Safari 26+ on iPhone/iPad (set in layouts/base.njk)
+  if (!document.documentElement.classList.contains('has-floating-toolbar')) return;
   const banners = findAll('.contact-banner');
   if (!banners.length || !('IntersectionObserver' in window)) return; // the layer then simply stays visible
   const observer = new IntersectionObserver(

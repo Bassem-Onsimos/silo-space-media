@@ -630,29 +630,28 @@ button:hover .arrow {
    ::before/::after is ignored); measured on iOS 26. So while the page is at the top, a thin black strip there
    (.toolbar-strip, added by layouts/base.njk on pages with a hero) turns the toolbar area black; it covers only the
    hero's darkest bottom 8px. As soon as you scroll it is gone (height 0, hidden), and the page runs under the toolbar
-   as usual; it comes back only at the very top, once the hero fills the screen again. On and off at once, no fade: scrolling back up, Safari took its colour mid-fade and kept a dark grey.
-   Safari on iPhone and iPad only (-webkit-touch-callout): Chrome on Android shrinks a bar at the top, where a strip at
-   the bottom makes no sense. Where the toolbar doesn't shrink (iPad, desktop), min() makes it 0. Below the
-   menu (45) and the header (50). */
+   as usual; it comes back only at the very top, once the hero fills the screen again. On and off at once, no fade:
+   scrolling back up, Safari took its colour mid-fade and kept a dark grey.
+   Only in Safari 26+ on iPhone and iPad (.has-floating-toolbar, set in layouts/base.njk): Chrome on iPhone shrinks
+   its address bar too, and showed the strip over the hero. Where the toolbar doesn't shrink (iPad), min() makes it 0.
+   Below the menu (45) and the header (50). */
 .toolbar-strip {
   display: none;
 }
-@supports (-webkit-touch-callout: none) {
-  .toolbar-strip {
-    display: block;
-    position: fixed;
-    inset: auto 0 0;
-    height: min(8px, 100lvh - 100svh);
-    background: #050505;
-    pointer-events: none;
-    z-index: 40;
-  }
-  @supports (animation-timeline: scroll()) {
-    .toolbar-strip {
-      animation: toolbar-strip-fade step-end both;
-      animation-timeline: scroll();
-      animation-range: 0 4px; /* only at the very top (a little slack: phones stop a fraction away from 0) */
-    }
+.has-floating-toolbar .toolbar-strip {
+  display: block;
+  position: fixed;
+  inset: auto 0 0;
+  height: min(8px, 100lvh - 100svh);
+  background: #050505;
+  pointer-events: none;
+  z-index: 40;
+}
+@supports (animation-timeline: scroll()) {
+  .has-floating-toolbar .toolbar-strip {
+    animation: toolbar-strip-fade step-end both;
+    animation-timeline: scroll();
+    animation-range: 0 4px; /* only at the very top (a little slack: phones stop a fraction away from 0) */
   }
 }
 /* gone, not just transparent: Safari keeps colouring its toolbar from a transparent element */
@@ -1134,7 +1133,7 @@ button:hover .arrow {
   z-index: 0;
 }
 /* hidden while the banner is out of view, so Safari doesn't colour its toolbar from it (scripts/modules/contact-banner.js) */
-.contact-banner.is-off-screen .contact-banner-background {
+.has-floating-toolbar .contact-banner.is-off-screen .contact-banner-background {
   visibility: hidden;
 }
 .contact-banner-content {

@@ -13,6 +13,16 @@
 <link rel="stylesheet" href="/silo-space-media/assets/css/site.css"><script>
   document.documentElement.classList.add('is-preparing-page');
   setTimeout(function showPageAnyway() { document.documentElement.classList.remove('is-preparing-page'); }, 3000);
+</script><script>
+  (function detectFloatingToolbar() {
+    var ua = navigator.userAgent;
+    var isAppleTouch = /iP(hone|ad|od)/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+    var isOtherBrowser = /CriOS|FxiOS|EdgiOS|OPiOS|OPT\/|Ddg\/|GSA\/|YaBrowser/.test(ua);
+    var version = /Version\/(\d+)/.exec(ua);
+    if (isAppleTouch && !isOtherBrowser && /Safari\//.test(ua) && version && +version[1] >= 26) {
+      document.documentElement.classList.add('has-floating-toolbar');
+    }
+  })();
 </script>
 <script type="module" src="/silo-space-media/assets/js/main.js"></script>
 </head>
