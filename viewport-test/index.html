@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Toolbar strip test</title>
+<style>
+  html, body { margin: 0; background: #f0efe9; font: 600 19px/1.4 -apple-system, sans-serif; }
+  main { display: block; }
+  #hero { height: 100svh; background: linear-gradient(#446, #112); color: #fff; padding: 90px 16px 0; box-sizing: border-box; }
+  #hero a { color: #9cf; display: block; margin: 14px 0; }
+  #after { padding: 24px 16px 1400px; }
+  .el { position: fixed; left: 0; right: 0; bottom: 0; height: 8px; background: #050505; z-index: 40; pointer-events: none; }
+  .pseudo main::after { content: ''; position: fixed; inset: auto 0 0; height: 8px; background: #050505; z-index: 40; pointer-events: none; }
+  @supports (animation-timeline: scroll()) {
+    .fade .el, .fade.pseudo main::after { animation: f linear both; animation-timeline: scroll(); animation-range: 0 120px; }
+  }
+  @keyframes f { to { opacity: 0; } }
+</style>
+</head>
+<body>
+<main>
+  <section id="hero">
+    <b id="which"></b>
+    <a href="?t=el">A: element, no fade</a>
+    <a href="?t=el-fade">B: element, with fade</a>
+    <a href="?t=pseudo">C: pseudo-element, no fade</a>
+    <a href="?t=pseudo-fade">D: pseudo-element, with fade (like the site)</a>
+  </section>
+  <div id="after">Section after the hero.</div>
+</main>
+<script>
+  const t = new URLSearchParams(location.search).get('t') || 'el';
+  document.getElementById('which').textContent = 'Showing: ' + t;
+  const root = document.documentElement;
+  if (t.startsWith('el')) { const d = document.createElement('div'); d.className = 'el'; document.body.appendChild(d); }
+  if (t.startsWith('pseudo')) root.classList.add('pseudo');
+  if (t.endsWith('fade')) root.classList.add('fade');
+</script>
+</body>
+</html>
