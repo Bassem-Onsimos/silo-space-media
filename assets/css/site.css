@@ -236,6 +236,28 @@ button:hover .arrow {
   background: var(--ink);
   border-color: var(--line-d);
 }
+/* Safari 26 on iPad (and iPhone) colours its see-through top bar from a real element fixed at the top edge, 8px or
+   taller (pseudo-elements are ignored), but only when that element appears: it ignores the header turning black later
+   (measured on an iPad). So a thin black strip inside the header appears while the header is solid, and the top bar
+   turns black with it; over a hero, with the header transparent, there is no strip and the bar stays see-through.
+   On and off as height 0 + hidden, the way the toolbar strip in hero.css does it. Safari 26+ only
+   (.has-floating-toolbar, set in layouts/base.njk). */
+.header-strip {
+  display: none;
+}
+.has-floating-toolbar .header-strip {
+  display: block;
+  position: absolute;
+  inset: 0 0 auto;
+  height: 0;
+  visibility: hidden;
+  background: var(--ink);
+  pointer-events: none;
+}
+.has-floating-toolbar .site-header.is-solid .header-strip {
+  height: 8px;
+  visibility: visible;
+}
 /* menu open: the list has its own top line, so drop the header's */
 .menu-is-open .site-header.is-solid {
   border-color: transparent;
