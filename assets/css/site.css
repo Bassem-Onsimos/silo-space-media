@@ -629,8 +629,8 @@ button:hover .arrow {
    pinned to the bottom of the page area, if it is at least about 8px tall (4px is ignored) and a real element (a
    ::before/::after is ignored); measured on iOS 26. So while the page is at the top, a thin black strip there
    (.toolbar-strip, added by layouts/base.njk on pages with a hero) turns the toolbar area black; it covers only the
-   hero's darkest bottom 8px. It fades over the first 120px of scrolling, and the page then runs under the toolbar as
-   usual. Safari on iPhone and iPad only (-webkit-touch-callout): Chrome on Android shrinks a bar at the top, where a
+   hero's darkest bottom 8px. It fades and shrinks away over the first 120px of scrolling, and the page then runs under
+   the toolbar as usual. Safari on iPhone and iPad only (-webkit-touch-callout): Chrome on Android shrinks a bar at the top, where a
    strip at the bottom makes no sense. Where the toolbar doesn't shrink (iPad, desktop), min() makes it 0. Below the
    menu (45) and the header (50). */
 .toolbar-strip {
@@ -654,9 +654,12 @@ button:hover .arrow {
     }
   }
 }
+/* Safari keeps colouring its toolbar from a transparent element, so the strip also shrinks away and is hidden */
 @keyframes toolbar-strip-fade {
   to {
     opacity: 0;
+    height: 0;
+    visibility: hidden;
   }
 }
 
