@@ -22,6 +22,12 @@
   .v-el-thin .bar { top: 0; height: 8px; padding: 0; }
   .v-pseudo body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 70px; background: #050505; z-index: 10; }
   .v-el-up .bar { top: -100px; height: 170px; }
+  /* G: starts transparent, turns black after 2 seconds (like the header over a hero) */
+  .v-el-late .bar { top: 0; height: 70px; background: transparent; transition: background-color 0.3s; }
+  .v-el-late .bar.is-black { background: #050505; }
+  /* H: a transparent bar with an 8px black strip inside it at the top */
+  .v-el-inner .bar { top: 0; height: 70px; background: transparent; }
+  .v-el-inner .bar i { position: absolute; top: 0; left: 0; right: 0; height: 8px; background: #050505; }
 </style>
 </head>
 <body>
@@ -40,6 +46,8 @@
   <a href="?v=el-thin">D: black bar at top 0, 8px</a>
   <a href="?v=pseudo">E: black ::before at top 0, 70px</a>
   <a href="?v=el-up">F: black bar reaching 100px above the top</a>
+  <a href="?v=el-late">G: bar that starts transparent and turns black after 2 seconds</a>
+  <a href="?v=el-inner">H: transparent bar with an 8px black strip inside at the top</a>
 </section>
 <div id="bands"></div>
 <script>
@@ -47,6 +55,8 @@
   document.getElementById('which').textContent = 'Showing: ' + v;
   if (v !== 'none') document.documentElement.classList.add('v-' + v);
   if (v.startsWith('el')) { const d = document.createElement('div'); d.className = 'bar'; d.textContent = 'fixed bar'; document.body.appendChild(d); }
+  if (v === 'el-late') setTimeout(() => document.querySelector('.bar').classList.add('is-black'), 2000);
+  if (v === 'el-inner') document.querySelector('.bar').appendChild(document.createElement('i'));
   const bands = document.getElementById('bands');
   for (let i = 1; i <= 20; i++) { const d = document.createElement('div'); d.className = 'band'; d.textContent = 'BAND ' + i; bands.appendChild(d); }
   const h = (id) => document.getElementById(id).getBoundingClientRect().height.toFixed(1);
