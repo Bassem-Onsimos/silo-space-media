@@ -17,6 +17,7 @@ import { setUpPodcastPlayer } from './modules/podcast-player.js';
 import { setUpContactForm } from './modules/contact-form.js';
 import { setUpHeadingFitting } from './modules/fit-headings.js';
 import { setUpScrollReveal } from './modules/scroll-reveal.js';
+import { setUpLabelRoom } from './modules/label-room.js';
 import { findOne } from './modules/dom.js';
 
 function startFeatures() {
@@ -44,6 +45,7 @@ function startFeatures() {
 
   // Every page
   const fitHeadings = setUpHeadingFitting();
+  setUpLabelRoom(); // after the headings are fitted: it measures them
   setUpScrollReveal();
   return fitHeadings;
 }

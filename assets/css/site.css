@@ -109,7 +109,7 @@ video {
   padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
 }
 .band {
-  padding-block: clamp(72px, 10vw, 150px);
+  padding-block: clamp(72px, 8vw, 150px);
 }
 .light {
   background: var(--paper);
@@ -546,12 +546,9 @@ button:hover .arrow {
   gap: 12px;
   min-width: min(340px, 100%);
 }
-/* once the reel drops below the description (858px and narrower, measured for the current text), it spans the
-   full width; side by side it keeps its own width. Re-measure if the description changes length */
-@media (max-width: 858px) {
-  .hero-foot .reel {
-    flex-basis: 100%;
-  }
+/* the Projects hero's reel spans the full width on every screen */
+.hero-foot .reel {
+  flex-basis: 100%;
 }
 .reel-progress {
   display: flex;
@@ -624,6 +621,36 @@ button:hover .arrow {
   .hero h1 {
     font-stretch: 100%;
     font-size: clamp(38px, 11.4vw, 80px);
+  }
+}
+
+/* Safari on iPhone floats a see-through toolbar over the bottom of the page, and a full-screen hero (sized to the
+   screen with the toolbar showing) ends where the toolbar starts, so the next section shows through it. While the page
+   is at the top, a black strip the toolbar's height covers that band; it fades as you scroll, and the page then runs
+   under the toolbar as usual. Safari on iPhone and iPad only (-webkit-touch-callout): Chrome on Android shrinks a bar at
+   the top, and a strip at the bottom there would cover the hero. Where the toolbar doesn't shrink (iPad, desktop), the
+   height is 0. Below the menu (45) and the header (50). */
+@supports (-webkit-touch-callout: none) {
+  :is(.page-home, .page-projects, .page-podcasts, .page-about)::after {
+    content: '';
+    position: fixed;
+    inset: auto 0 0;
+    height: calc(100lvh - 100svh);
+    background: #050505;
+    pointer-events: none;
+    z-index: 40;
+  }
+  @supports (animation-timeline: scroll()) {
+    :is(.page-home, .page-projects, .page-podcasts, .page-about)::after {
+      animation: toolbar-strip-fade linear both;
+      animation-timeline: scroll();
+      animation-range: 0 120px;
+    }
+  }
+}
+@keyframes toolbar-strip-fade {
+  to {
+    opacity: 0;
   }
 }
 
@@ -1163,7 +1190,7 @@ button:hover .arrow {
   display: grid;
   place-items: center;
   min-height: clamp(110px, 12vw, 170px);
-  padding: 20px;
+  padding: 50px;
   border-right: 1px solid var(--line-d);
   border-bottom: 1px solid var(--line-d);
   text-align: center;
@@ -1218,8 +1245,12 @@ button:hover .arrow {
   .partner-tile:last-child {
     grid-column: 1 / -1;
   }
+  /* keep the tall tiles, but give the logos and names the width they need so they stay centred */
+  .partner-tile {
+    padding-inline: 16px;
+  }
   .partner-logo img {
-    max-height: 30px;
+    max-height: var(--phone-height, 30px); /* a logo can ask for more with phoneHeight in _data/partners.js */
   }
   .partner-logo b {
     font-size: 20px;
@@ -1229,6 +1260,20 @@ button:hover .arrow {
   .partners-fade .partner-tile {
     opacity: 1;
     transform: none;
+  }
+}
+
+/* medium screens: more room around each partner inside its tile, and a steady name size */
+@media (min-width: 701px) and (max-width: 1200px) {
+  .partner-name {
+    font-size: 18px;
+  }
+}
+
+/* small tablets: 3 narrow columns, same reason (NE Academy and LEAP would spill to the right at these widths) */
+@media (min-width: 701px) and (max-width: 768px) {
+  .partner-tile {
+    padding-inline: 24px;
   }
 }
 
@@ -1346,6 +1391,11 @@ button:hover .arrow {
   flex-wrap: wrap;
   margin-bottom: clamp(36px, 5vw, 64px);
 }
+/* a smaller section title, for a heading that sits right above its content (On air on Podcasts, Case studies on
+   Projects) */
+.h2-compact {
+  font-size: clamp(32px, 4.4vw, 64px);
+}
 .section-heading .label {
   display: block;
   margin-bottom: 18px;
@@ -1355,7 +1405,7 @@ button:hover .arrow {
 .feat {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(16px, 2vw, 28px);
+  gap: clamp(16px, 3vw, 35px);
   row-gap: clamp(40px, 5vw, 72px);
 }
 .feat .frame {
@@ -1375,6 +1425,7 @@ button:hover .arrow {
   align-content: start;
 }
 .frame {
+  border-radius: 22px;
   position: relative;
   overflow: hidden;
   background: var(--graphite);
@@ -1501,17 +1552,14 @@ button:hover .arrow {
 /* ---------- services ---------- */
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(12px, 1.4vw, 20px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(25px, 3vw, 35px);
+  padding-bottom: 20px;
 }
-@media (max-width: 1000px) {
-  .services-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .services-grid {
     grid-template-columns: 1fr;
+    gap: 35px;
   }
 }
 .service-card {
@@ -1523,9 +1571,16 @@ button:hover .arrow {
 }
 .service-card-inner {
   display: grid;
-  min-height: clamp(260px, 22vw, 340px);
+  min-height: 350px;
   transition: transform 0.7s var(--ease);
   transform-style: preserve-3d;
+}
+/* phones: taller cards, so the longest back text fits at every width (it needs up to 398px at 320px wide) and all
+   the cards stay the same height */
+@media (max-width: 500px) {
+  .service-card-inner {
+    min-height: 400px;
+  }
 }
 .service-card-face {
   grid-area: 1 / 1;
@@ -1538,6 +1593,7 @@ button:hover .arrow {
   padding: clamp(20px, 2vw, 28px);
   overflow: hidden;
   position: relative;
+  border-radius: 22px;
 }
 .service-card-front {
   background: var(--ink);
@@ -1601,12 +1657,12 @@ button:hover .arrow {
   font-weight: 800;
   font-stretch: 110%;
   text-transform: uppercase;
-  font-size: 16px;
+  font-size: 24px;
   line-height: 1.15;
 }
 .service-card-back p {
   margin: 0;
-  font-size: 15px;
+  font-size: 18px;
   line-height: 1.55;
   color: #3b3b38;
 }
@@ -1637,6 +1693,38 @@ button:hover .arrow {
 @media (prefers-reduced-motion: reduce) {
   .service-card-inner {
     transition: none;
+  }
+}
+@media (max-width: 850px) {
+  .service-card-back .service-card-title {
+    font-size: 20px;
+  }
+  .service-card-back p {
+    font-size: 17px;
+  }
+}
+@media (max-width: 768px) {
+  .service-card-back .service-card-title {
+    font-size: 24px;
+  }
+  .service-card-back p {
+    font-size: 20px;
+  }
+}
+@media (max-width: 430px) {
+  .service-card-back .service-card-title {
+    font-size: 22px;
+  }
+  .service-card-back p {
+    font-size: 18px;
+  }
+}
+@media (max-width: 400px) {
+  .service-card-back .service-card-title {
+    font-size: 20px;
+  }
+  .service-card-back p {
+    font-size: 17px;
   }
 }
 
@@ -2081,7 +2169,7 @@ button:hover .arrow {
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(16px, 2vw, 28px);
+  gap: clamp(16px, 3vw, 35px);
   row-gap: clamp(40px, 4.5vw, 64px);
 }
 .grid .frame {
@@ -2490,7 +2578,12 @@ button:hover .arrow {
 
 /* ---------- shared vertical alignment ----------
    Two-sided rows centre their columns. The small label above a heading is taken out of flow
-   (it hangs above the heading), so the heading itself is what lines up with the other side. */
+   (it hangs above the heading), so the heading itself is what lines up with the other side.
+   --label-hang is the room it takes: its height (12px text x 1.55 line height) plus its gap to the heading. */
+:root {
+  --label-gap: 16px;
+  --label-hang: calc(12px * 1.55 + var(--label-gap));
+}
 .split > div:first-child,
 .intro-grid > div:first-child,
 .contact-grid > div:first-child,
@@ -2503,7 +2596,7 @@ button:hover .arrow {
 .section-heading > div:first-child > .label:first-child {
   position: absolute;
   left: 0;
-  bottom: calc(100% + 16px);
+  bottom: calc(100% + var(--label-gap));
   margin: 0;
   white-space: nowrap;
 }
@@ -2513,9 +2606,18 @@ button:hover .arrow {
 .section-heading > div:first-child > .label:first-child + * {
   margin-top: 0 !important;
 }
-/* make room for the hanging label where a section has no top padding */
-.video-block > .section-heading:first-child {
-  padding-top: 34px;
+/* A hanging label at the very top of a section would sit inside the section's top padding, so the gap above it
+   would be shorter than the gap at the bottom by --label-hang. Make room for it there: the gap above the label is then
+   the section's full top padding, like the bottom. (Also where a section has no top padding, e.g. under a video.)
+   In a side-by-side row, a taller column beside the heading may already reach above the label, and the room would only
+   add empty space: scripts/modules/label-room.js measures each row and sets --label-room to just what is needed.
+   Where a label is put back in the flow (small-screen-labels.css, episodes on show pages), this is reset. The Contact
+   page is left out: its side-by-side layout is sized to fit one screen. No selector weight (:where), so any rule that
+   resets it wins. */
+:where(.wrap, .wrap > :first-child):where(.split, .intro-grid, .contact-grid, .section-heading):where(
+    :not(.contact-page *):has(> div:first-child > .label:first-child)
+  ) {
+  padding-top: var(--label-room, var(--label-hang));
 }
 /* a small label on the right of a header (e.g. "4 images") has no bottom margin, so it centres exactly */
 .section-heading > .label:last-child {
@@ -2663,9 +2765,6 @@ button:hover .arrow {
 .shows {
   display: grid;
   gap: clamp(56px, 7vw, 110px);
-}
-.shows-heading {
-  font-size: clamp(32px, 4.4vw, 64px);
 }
 .shows-lede {
   font-size: clamp(16px, 1.3vw, 19px);
@@ -3289,12 +3388,38 @@ button:hover .arrow {
 .about-band {
   padding-block: var(--pod-gap);
 }
+/* the host cards' soft shadow reaches into the gap below them and makes it look smaller than the gap at the top,
+   where the gap is smaller (medium screens and phones), so add a little room under them there. Not on wide screens */
+@media (min-width: 761px) and (max-width: 1199px) {
+  .about-band {
+    padding-bottom: calc(var(--pod-gap) + 25px);
+  }
+}
+@media (max-width: 760px) {
+  .about-band {
+    padding-bottom: calc(var(--pod-gap) + 20px);
+  }
+}
 /* the small label sits in the flow here (like the player's title), so the gap above it is exactly --pod-gap */
 .episodes-section .section-heading > div:first-child > .label:first-child {
   position: static;
   display: block;
   margin-bottom: 14px;
   white-space: normal;
+}
+.episodes-section .section-heading {
+  padding-top: 0;
+}
+/* About the show: the label is in the flow too (same gap to the heading as when it hangs), so the label and heading
+   together are centred against the paragraphs beside them */
+.about-band .split > div:first-child > .label:first-child {
+  position: static;
+  display: block;
+  margin-bottom: var(--label-gap);
+  white-space: normal;
+}
+.about-band .split {
+  padding-top: 0;
 }
 .episode-grid {
   display: grid;
@@ -3670,9 +3795,13 @@ button:hover .arrow {
   }
 }
 
+/* mic photo: shown whole, with sides in the photo's own edge colour (about 10/255) so the photo and its sides read as
+   one block. No filter: the photo is already black and white, and while fading in, Chrome draws it without the filter
+   (graphics card), so a filter-made match showed two seams until the fade ended */
 .podcast-services .feature-photo img {
   object-fit: contain;
-  background-color: black;
+  background-color: rgb(10 10 10);
+  filter: none;
 }
 /* "What we do" (podcasts page): calmer heading and a taller mic photo on laptops/desktops; phones unchanged */
 .podcast-services .feature-text h2 {
@@ -3712,6 +3841,11 @@ button:hover .arrow {
     display: block;
     margin-bottom: 18px;
     white-space: normal;
+  }
+  /* the label is in the flow now, so no room is kept for it above (see alignment.css) */
+  .page.page-podcasts .split,
+  .page.page-about .split {
+    padding-top: 0;
   }
 }
 @media (prefers-reduced-motion: reduce) {
