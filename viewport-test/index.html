@@ -26,7 +26,13 @@
 <div class="probe" id="p-dvh" style="height:100dvh"></div>
 <div class="probe" id="p-sab" style="height:env(safe-area-inset-bottom,0px)"></div>
 <div class="probe" id="p-sat" style="height:env(safe-area-inset-top,0px)"></div>
-<section id="hero"><div id="vals"></div></section>
+<section id="hero"><div id="vals"></div>
+  <nav id="tests" style="position:absolute;left:16px;right:16px;top:430px;display:grid;gap:10px">
+    <a href="?" style="color:#9cf">Original (blue strip)</a>
+    <a href="?h=1&c=000&red=0" style="color:#9cf">Test 1: 1px black strip</a>
+    <a href="?h=2&c=000&red=0" style="color:#9cf">Test 2: 2px black strip</a>
+    <a href="?h=2&c=000&red=0&fade=1" style="color:#9cf">Test 3: 2px black strip, fades on scroll</a>
+  </nav></section>
 <div id="strip"></div><div id="bottom"></div>
 <div id="after">Section after the hero. Blue = strip (100lvh − 100svh, fixed bottom). Red = fixed bottom:0, 12px. Yellow line = hero bottom.</div>
 <script>
