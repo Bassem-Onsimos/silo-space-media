@@ -237,26 +237,39 @@ button:hover .arrow {
   border-color: var(--line-d);
 }
 /* Safari 26 on iPad (and iPhone) colours its see-through top bar from a real element fixed at the top edge, 8px or
-   taller (pseudo-elements are ignored), but only when that element appears: it ignores the header turning black later
-   (measured on an iPad). So a thin black strip inside the header appears while the header is solid, and the top bar
-   turns black with it; over a hero, with the header transparent, there is no strip and the bar stays see-through.
-   On and off as height 0 + hidden, the way the toolbar strip in hero.css does it. Safari 26+ only
-   (.has-floating-toolbar, set in layouts/base.njk). */
-.header-strip {
+   taller (pseudo-elements are ignored), when that element appears; it ignored the header turning black later, and a
+   strip inside the header switched by a class (measured on an iPad). So, like the toolbar strip in hero.css, a
+   separate strip (.top-strip, added by layouts/base.njk) is switched by a scroll animation: on hero pages it appears
+   once the page has scrolled 40px, when the header turns solid, so the bar stays see-through over the hero and turns
+   black after; pages without a hero have it from the start. Safari 26+ only (.has-floating-toolbar). */
+.top-strip {
   display: none;
 }
-.has-floating-toolbar .header-strip {
+.has-floating-toolbar .top-strip {
   display: block;
-  position: absolute;
+  position: fixed;
   inset: 0 0 auto;
-  height: 0;
-  visibility: hidden;
+  height: 8px;
   background: var(--ink);
   pointer-events: none;
+  z-index: 51; /* over the header, which is black there by then */
 }
-.has-floating-toolbar .site-header.is-solid .header-strip {
-  height: 8px;
-  visibility: visible;
+@supports (animation-timeline: scroll()) {
+  .has-floating-toolbar .top-strip.after-scroll {
+    animation: top-strip-appear step-end both;
+    animation-timeline: scroll();
+    animation-range: 0 40px; /* the header turns solid at 40px (scripts/modules/site-header.js) */
+  }
+}
+@keyframes top-strip-appear {
+  from {
+    height: 0;
+    visibility: hidden;
+  }
+  to {
+    height: 8px;
+    visibility: visible;
+  }
 }
 /* menu open: the list has its own top line, so drop the header's */
 .menu-is-open .site-header.is-solid {
