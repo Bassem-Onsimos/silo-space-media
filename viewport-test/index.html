@@ -13,6 +13,8 @@
   #vals b { display: inline-block; min-width: 130px; }
   .probe { position: absolute; top: 0; left: -10px; width: 1px; visibility: hidden; }
   #strip { position: fixed; left: 0; right: 0; bottom: 0; height: calc(100lvh - 100svh); background: rgba(0, 160, 255, 0.85); }
+  @supports (animation-timeline: scroll()) { .fade #strip { animation: f linear both; animation-timeline: scroll(); animation-range: 0 120px; } }
+  @keyframes f { to { opacity: 0; } }
   #bottom { position: fixed; left: 0; width: 40%; bottom: 0; height: 12px; background: #f00; }
   #after { padding: 24px 16px 1200px; }
 </style>
@@ -28,6 +30,12 @@
 <div id="strip"></div><div id="bottom"></div>
 <div id="after">Section after the hero. Blue = strip (100lvh − 100svh, fixed bottom). Red = fixed bottom:0, 12px. Yellow line = hero bottom.</div>
 <script>
+  // options: ?h=2 (strip height in px), ?c=000 (strip colour), ?fade=1 (fade out over the first 120px), ?red=0 (hide red bar)
+  const q = new URLSearchParams(location.search), strip = document.getElementById('strip');
+  if (q.has('h')) strip.style.height = q.get('h') + 'px';
+  if (q.has('c')) strip.style.background = '#' + q.get('c');
+  if (q.get('fade') === '1') document.documentElement.classList.add('fade');
+  if (q.get('red') === '0') document.getElementById('bottom').style.display = 'none';
   const h = (id) => document.getElementById(id).getBoundingClientRect().height.toFixed(1);
   function show() {
     const vv = window.visualViewport;
