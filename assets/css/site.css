@@ -629,9 +629,10 @@ button:hover .arrow {
    pinned to the bottom of the page area, if it is at least about 8px tall (4px is ignored) and a real element (a
    ::before/::after is ignored); measured on iOS 26. So while the page is at the top, a thin black strip there
    (.toolbar-strip, added by layouts/base.njk on pages with a hero) turns the toolbar area black; it covers only the
-   hero's darkest bottom 8px. It fades and shrinks away over the first 120px of scrolling, and the page then runs under
-   the toolbar as usual. Safari on iPhone and iPad only (-webkit-touch-callout): Chrome on Android shrinks a bar at the top, where a
-   strip at the bottom makes no sense. Where the toolbar doesn't shrink (iPad, desktop), min() makes it 0. Below the
+   hero's darkest bottom 8px. Once you scroll 60px it is gone (height 0, hidden), and the page runs under the toolbar
+   as usual. On and off at once, no fade: scrolling back up, Safari took its colour mid-fade and kept a dark grey.
+   Safari on iPhone and iPad only (-webkit-touch-callout): Chrome on Android shrinks a bar at the top, where a strip at
+   the bottom makes no sense. Where the toolbar doesn't shrink (iPad, desktop), min() makes it 0. Below the
    menu (45) and the header (50). */
 .toolbar-strip {
   display: none;
@@ -648,13 +649,13 @@ button:hover .arrow {
   }
   @supports (animation-timeline: scroll()) {
     .toolbar-strip {
-      animation: toolbar-strip-fade linear both;
+      animation: toolbar-strip-fade step-end both;
       animation-timeline: scroll();
-      animation-range: 0 120px;
+      animation-range: 0 60px;
     }
   }
 }
-/* Safari keeps colouring its toolbar from a transparent element, so the strip also shrinks away and is hidden */
+/* gone, not just transparent: Safari keeps colouring its toolbar from a transparent element */
 @keyframes toolbar-strip-fade {
   to {
     opacity: 0;
