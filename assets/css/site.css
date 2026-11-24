@@ -1724,14 +1724,6 @@ button:hover .arrow {
 }
 @media (max-width: 768px) {
   .service-card-back .service-card-title {
-    font-size: 24px;
-  }
-  .service-card-back p {
-    font-size: 20px;
-  }
-}
-@media (max-width: 430px) {
-  .service-card-back .service-card-title {
     font-size: 22px;
   }
   .service-card-back p {
