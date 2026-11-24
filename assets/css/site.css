@@ -1119,22 +1119,23 @@ button:hover .arrow {
   z-index: 1;
 }
 /* The band is a window: clip-path clips a position:fixed layer, so the background stays still
-   while the page scrolls past (works on iOS too, unlike background-attachment:fixed). */
+   while the page scrolls past (works on iOS too, unlike background-attachment:fixed).
+   The layer is a ::before, not an element: Safari 26 on iPhone colours its see-through toolbar from a real element
+   fixed to the bottom of the screen (clipped or not) and kept it black past the banner, but it ignores pseudo-elements.
+   The image (set as --banner-image in partials/contact-banner.njk) is sized to the screen at its largest (100lvh) and
+   anchored at the top, so it doesn't move when the phone's toolbar grows or shrinks; the SVG fills any box like
+   cover (preserveAspectRatio slice). */
 .contact-banner {
   clip-path: inset(0);
 }
-.contact-banner-background {
+.contact-banner::before {
+  content: '';
   position: fixed;
   inset: 0;
   will-change: transform;
-  background-size: cover;
-  background-position: center;
+  background: var(--banner-image) top center / 100% 100lvh no-repeat;
   pointer-events: none;
   z-index: 0;
-}
-/* hidden while the banner is out of view, so Safari doesn't colour its toolbar from it (scripts/modules/contact-banner.js) */
-.has-floating-toolbar .contact-banner.is-off-screen .contact-banner-background {
-  visibility: hidden;
 }
 .contact-banner-content {
   display: grid;
